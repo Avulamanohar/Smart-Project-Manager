@@ -1,5 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { SiSlack } from 'react-icons/si';
+import { HiOutlineMail, HiUserGroup, HiCloud } from 'react-icons/hi';
+import { MdEmail } from 'react-icons/md';
 
 const Sidebar = () => {
     const { logout } = useAuth();
@@ -30,13 +33,33 @@ const Sidebar = () => {
                         <span className="ml-3 font-medium hidden md:block">{item}</span>
                     </div>
                 ))}
+
+                <div className="pt-4 mt-4 border-t border-slate-800">
+                    <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 hidden md:block">External Tools</p>
+                    <a href="https://teams.microsoft.com" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group text-slate-400 hover:bg-[#6264A7]/10 hover:text-[#6264A7]">
+                        <HiUserGroup className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        <span className="ml-3 font-medium hidden md:block">Teams</span>
+                    </a>
+                    <a href="https://slack.com/signin" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group text-slate-400 hover:bg-[#4A154B]/10 hover:text-[#4A154B]">
+                        <SiSlack className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        <span className="ml-3 font-medium hidden md:block">Slack</span>
+                    </a>
+                    <a href="https://outlook.office.com" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group text-slate-400 hover:bg-[#0078D4]/10 hover:text-[#0078D4]">
+                        <HiOutlineMail className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        <span className="ml-3 font-medium hidden md:block">Outlook</span>
+                    </a>
+                    <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group text-slate-400 hover:bg-[#EA4335]/10 hover:text-[#EA4335]">
+                        <MdEmail className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        <span className="ml-3 font-medium hidden md:block">Gmail</span>
+                    </a>
+                    <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group text-slate-400 hover:bg-[#1DA462]/10 hover:text-[#1DA462]">
+                        <HiCloud className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        <span className="ml-3 font-medium hidden md:block">Drive</span>
+                    </a>
+                </div>
             </nav>
             <div className="p-4 border-t border-slate-800">
-                <div className="p-4 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl mb-4 hidden md:block border border-slate-700">
-                    <h4 className="text-sm font-semibold text-white">Pro Plan</h4>
-                    <p className="text-xs text-slate-400 mt-1">Unlock AI Generator</p>
-                    <button className="mt-3 w-full py-2 bg-primary/20 hover:bg-primary/30 text-primary text-xs font-semibold rounded-lg transition-colors border border-primary/20">Upgrade</button>
-                </div>
+
                 <div onClick={logout} className="p-3 rounded-xl hover:bg-red-500/10 hover:text-red-400 text-slate-400 cursor-pointer flex items-center transition-colors">
                     <div className="w-5 h-5 rounded-md bg-slate-700 group-hover:bg-red-500/20"></div>
                     <span className="ml-3 font-medium hidden md:block">Logout</span>
