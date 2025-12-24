@@ -1,6 +1,8 @@
 const Task = require('../models/Task');
 const axios = require('axios');
 
+const { getIO } = require('../socket');
+
 // @desc    Analyze task description using AI Service
 // @route   POST /api/tasks/analyze
 // @access  Private
@@ -45,6 +47,13 @@ const createTask = async (req, res) => {
         await addToGoogleCalendar(req.user._id, task);
     }
 
+    try {
+        const io = getIO();
+        io.to(project).emit("task_created", populatedTask);
+    } catch (error) {
+        console.error("Socket emit error:", error);
+    }
+
     res.status(201).json(populatedTask);
 };
 
@@ -70,6 +79,20 @@ const updateTask = async (req, res) => {
         task.assignees = req.body.assignees || task.assignees;
 
         const updatedTask = await task.save();
+
+        // Populate manually or re-fetch if needed, but for status update it might be fine.
+        // Better to populate to match frontend expectations if we replace the object.
+        // But purely for status update, sending the object is usually enough if frontend merges.
+        // Let's re-fetch to be safe and consistent.
+        const populatedTask = await Task.findById(updatedTask._id).populate('assignees', 'name email avatar');
+
+        try {
+            const io = getIO();
+            io.to(task.project.toString()).emit("task_updated", populatedTask);
+        } catch (error) {
+            console.error("Socket emit error:", error);
+        }
+
         res.json(updatedTask);
     } else {
         res.status(404).json({ message: 'Task not found' });
@@ -83,7 +106,16 @@ const deleteTask = async (req, res) => {
     const task = await Task.findById(req.params.id);
 
     if (task) {
+        const projectId = task.project.toString();
         await task.deleteOne();
+
+        try {
+            const io = getIO();
+            io.to(projectId).emit("task_deleted", req.params.id);
+        } catch (error) {
+            console.error("Socket emit error:", error);
+        }
+
         res.json({ message: 'Task removed' });
     } else {
         res.status(404).json({ message: 'Task not found' });
@@ -91,7 +123,7 @@ const deleteTask = async (req, res) => {
 };
 
 const reorderTasks = async (req, res) => {
-    const { tasks } = req.body; // Array of { _id, order, status }
+    const { tasks, projectId } = req.body; // Array of { _id, order, status } and projectId
 
     if (!tasks || !Array.isArray(tasks)) {
         return res.status(400).json({ message: 'Invalid data' });
@@ -106,6 +138,22 @@ const reorderTasks = async (req, res) => {
         }));
 
         await Task.bulkWrite(bulkOps);
+
+        if (projectId) {
+            try {
+                const io = getIO();
+                // We emit the whole new list? Or just a signal to refetch?
+                // Reordering implies many changes. Sending just "tasks_reordered" signal might be best,
+                // and let frontend refetch. Or send the `tasks` array (which has partial data).
+                // Frontend usually listens to "tasks_reordered" and updates local state if it matches, 
+                // or refetches.
+                // Let's emit the updates provided.
+                io.to(projectId).emit("tasks_reordered", tasks);
+            } catch (error) {
+                console.error("Socket emit error:", error);
+            }
+        }
+
         res.json({ message: 'Tasks reordered' });
     } catch (error) {
         console.error("Reorder failed", error);

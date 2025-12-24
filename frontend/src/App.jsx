@@ -6,12 +6,21 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import MyTasks from './pages/MyTasks';
 import Calendar from './pages/Calendar';
+import Team from './pages/Team';
+import Settings from './pages/Settings';
 import Layout from './components/Layout';
+
+import FloatingChatbot from './components/FloatingChatbot';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <div>Loading...</div>;
-  return user ? children : <Navigate to="/login" />;
+  return user ? (
+    <>
+      {children}
+      <FloatingChatbot />
+    </>
+  ) : <Navigate to="/login" />;
 };
 
 function App() {
@@ -39,6 +48,20 @@ function App() {
             <PrivateRoute>
               <Layout>
                 <Calendar />
+              </Layout>
+            </PrivateRoute>
+          } />
+          <Route path="/team" element={
+            <PrivateRoute>
+              <Layout>
+                <Team />
+              </Layout>
+            </PrivateRoute>
+          } />
+          <Route path="/settings" element={
+            <PrivateRoute>
+              <Layout>
+                <Settings />
               </Layout>
             </PrivateRoute>
           } />

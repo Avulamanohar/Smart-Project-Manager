@@ -61,8 +61,11 @@ const Dashboard = () => {
                 className="h-16 border-b border-slate-800/50 flex items-center justify-between px-8 bg-dark-bg/50 backdrop-blur-md sticky top-0 z-10"
             >
                 <div>
-                    <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">Welcome back, {user?.name.split(' ')[0]}</h2>
+                    <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">Welcome back, {user?.name}</h2>
                     <p className="text-xs text-slate-500">Here's what's happening today.</p>
+                    <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm font-medium text-slate-400 bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700/50">{user?.email}</span>
+                    </div>
                 </div>
                 <div className="flex items-center space-x-4">
                     <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400">🔔</div>
@@ -153,13 +156,25 @@ const Dashboard = () => {
                                         </div>
 
                                         <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
-                                            <div className="flex -space-x-2">
-                                                <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-bold border-2 border-dark-card text-white shadow-sm">
-                                                    {user?.name.charAt(0)}
-                                                </div>
-                                                <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold border-2 border-dark-card text-slate-400">
-                                                    +2
-                                                </div>
+                                            <div className="flex -space-x-2 items-center">
+                                                {[project.owner, ...project.members].slice(0, 3).map((member, i) => (
+                                                    <div key={i} className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold border-2 border-dark-card text-white shadow-sm" title={member.name}>
+                                                        {member.avatar ? (
+                                                            <img src={member.avatar} alt={member.name} className="w-full h-full rounded-full object-cover" />
+                                                        ) : (
+                                                            member && member.name ? (
+                                                                <span>{member.name.charAt(0)}</span>
+                                                            ) : (
+                                                                <span>?</span>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                ))}
+                                                {(project.members.length + 1) > 3 && (
+                                                    <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold border-2 border-dark-card text-slate-400">
+                                                        +{project.members.length + 1 - 3}
+                                                    </div>
+                                                )}
                                             </div>
                                             <span className="text-xs text-primary font-medium group-hover:underline">View Board →</span>
                                         </div>

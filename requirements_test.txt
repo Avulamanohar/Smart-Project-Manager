@@ -1,0 +1,4 @@
+# Project Requirements
+The system must be secure.
+Login must use OAuth2.
+All APIs must be rate-limited.

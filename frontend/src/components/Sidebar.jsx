@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { SiSlack } from 'react-icons/si';
 import { HiOutlineMail, HiUserGroup, HiCloud } from 'react-icons/hi';
 import { MdEmail } from 'react-icons/md';
+import { RxDashboard } from 'react-icons/rx';
+import { FiCheckSquare, FiCalendar, FiUsers, FiSettings, FiLogOut } from 'react-icons/fi';
 
 const Sidebar = () => {
     const { logout } = useAuth();
@@ -16,23 +18,25 @@ const Sidebar = () => {
             </div>
             <nav className="flex-1 p-4 space-y-2">
                 <Link to="/" className={`p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group ${location.pathname === '/' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-                    <div className={`w-5 h-5 rounded-md ${location.pathname === '/' ? 'bg-primary' : 'bg-slate-700 group-hover:bg-slate-600'} transition-colors`}></div>
+                    <RxDashboard className="w-5 h-5 transition-colors" />
                     <span className="ml-3 font-medium hidden md:block">Dashboard</span>
                 </Link>
                 <Link to="/my-tasks" className={`p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group ${location.pathname === '/my-tasks' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-                    <div className={`w-5 h-5 rounded-md ${location.pathname === '/my-tasks' ? 'bg-primary' : 'bg-slate-700 group-hover:bg-slate-600'} transition-colors`}></div>
+                    <FiCheckSquare className="w-5 h-5 transition-colors" />
                     <span className="ml-3 font-medium hidden md:block">My Tasks</span>
                 </Link>
                 <Link to="/calendar" className={`p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group ${location.pathname === '/calendar' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-                    <div className={`w-5 h-5 rounded-md ${location.pathname === '/calendar' ? 'bg-primary' : 'bg-slate-700 group-hover:bg-slate-600'} transition-colors`}></div>
+                    <FiCalendar className="w-5 h-5 transition-colors" />
                     <span className="ml-3 font-medium hidden md:block">Calendar</span>
                 </Link>
-                {['Team', 'Settings'].map((item) => (
-                    <div key={item} className={`p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group text-slate-400 hover:bg-slate-800 hover:text-white`}>
-                        <div className={`w-5 h-5 rounded-md bg-slate-700 group-hover:bg-slate-600 transition-colors`}></div>
-                        <span className="ml-3 font-medium hidden md:block">{item}</span>
-                    </div>
-                ))}
+                <Link to="/team" className={`p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group ${location.pathname === '/team' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+                    <FiUsers className="w-5 h-5 transition-colors" />
+                    <span className="ml-3 font-medium hidden md:block">Team</span>
+                </Link>
+                <Link to="/settings" className={`p-3 rounded-xl cursor-pointer flex items-center transition-all duration-200 group ${location.pathname === '/settings' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+                    <FiSettings className="w-5 h-5 transition-colors" />
+                    <span className="ml-3 font-medium hidden md:block">Settings</span>
+                </Link>
 
                 <div className="pt-4 mt-4 border-t border-slate-800">
                     <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 hidden md:block">External Tools</p>
@@ -61,7 +65,7 @@ const Sidebar = () => {
             <div className="p-4 border-t border-slate-800">
 
                 <div onClick={logout} className="p-3 rounded-xl hover:bg-red-500/10 hover:text-red-400 text-slate-400 cursor-pointer flex items-center transition-colors">
-                    <div className="w-5 h-5 rounded-md bg-slate-700 group-hover:bg-red-500/20"></div>
+                    <FiLogOut className="w-5 h-5 transition-colors" />
                     <span className="ml-3 font-medium hidden md:block">Logout</span>
                 </div>
             </div>
