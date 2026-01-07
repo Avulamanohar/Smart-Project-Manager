@@ -1,5 +1,6 @@
-flask
-flask-cors
+fastapi
+uvicorn
+python-multipart
 requests
 python-dotenv
 boto3
@@ -7,3 +8,5 @@ langchain
 langgraph
 langchain-huggingface
 huggingface_hub
+faiss-cpu
+sentence-transformers

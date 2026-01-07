@@ -11,6 +11,7 @@ if (process.env.NODE_ENV === 'development') {
     app.use(require('morgan')('dev'));
 }
 
+app.set('trust proxy', 1); // Trust Render/Heroku proxy for HTTPS
 app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());

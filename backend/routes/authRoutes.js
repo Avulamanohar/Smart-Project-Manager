@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser, getUserProfile, updateUserProfile } = require('../controllers/authController');
+const { registerUser, loginUser, getUserProfile, updateUserProfile, getAllUsers } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/signup', registerUser);
 router.post('/login', loginUser);
 router.get('/profile', protect, getUserProfile);
 router.put('/profile', protect, updateUserProfile);
+router.get('/users', protect, getAllUsers);
 
 const passport = require('passport');
 const generateToken = (id) => {
@@ -28,11 +29,15 @@ router.get('/google', passport.authenticate('google', {
 }));
 
 router.get('/google/callback',
-    passport.authenticate('google', { failureRedirect: 'http://localhost:5173/login', session: false }),
+    passport.authenticate('google', {
+        failureRedirect: `${process.env.CLIENT_URL || 'http://localhost:5173'}/login`,
+        session: false
+    }),
     (req, res) => {
         // Successful authentication, redirect home.
         const token = generateToken(req.user._id);
-        res.redirect(`http://localhost:5173/login?token=${token}`);
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+        res.redirect(`${clientUrl}/login?token=${token}`);
     }
 );
 

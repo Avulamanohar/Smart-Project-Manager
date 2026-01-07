@@ -31,32 +31,33 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:5005/api/auth/google';
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
+        window.location.href = `${apiUrl}/auth/google`;
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-dark-bg">
-            <div className="bg-dark-card p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
-                <h2 className="text-3xl font-bold text-white mb-6 text-center">Welcome Back</h2>
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-dark-bg p-4 transition-colors duration-300">
+            <div className="bg-white dark:bg-dark-card p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-700">
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-6 text-center">Welcome Back</h2>
                 {error && <div className="bg-red-500/10 text-red-500 p-3 rounded mb-4 text-sm center">{error}</div>}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-slate-400 text-sm mb-1">Email</label>
+                        <label className="block text-slate-500 dark:text-slate-400 text-sm mb-1">Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-slate-800 text-white rounded-lg p-3 border border-slate-700 focus:border-primary focus:outline-none transition-colors"
+                            className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg p-3 border border-slate-200 dark:border-slate-700 focus:border-primary focus:outline-none transition-colors"
                             placeholder="you@example.com"
                         />
                     </div>
                     <div>
-                        <label className="block text-slate-400 text-sm mb-1">Password</label>
+                        <label className="block text-slate-500 dark:text-slate-400 text-sm mb-1">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-slate-800 text-white rounded-lg p-3 border border-slate-700 focus:border-primary focus:outline-none transition-colors"
+                            className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg p-3 border border-slate-200 dark:border-slate-700 focus:border-primary focus:outline-none transition-colors"
                             placeholder="••••••••"
                         />
                     </div>

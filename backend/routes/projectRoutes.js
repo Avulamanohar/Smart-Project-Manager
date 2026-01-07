@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { createProject, getProjects, getProjectById, getDashboardStats, addProjectMember, handleAICommand } = require('../controllers/projectController');
+const { createProject, getProjects, getProjectById, getDashboardStats, addProjectMember, handleAICommand, updateProject, deleteProject } = require('../controllers/projectController');
 const { protect } = require('../middleware/authMiddleware');
 
 const upload = multer({
@@ -40,7 +40,9 @@ router.post('/ai/command', protect, uploadMiddleware, handleAICommand);
 router.get('/stats', protect, getDashboardStats);
 
 router.route('/:id')
-    .get(protect, getProjectById);
+    .get(protect, getProjectById)
+    .put(protect, updateProject)
+    .delete(protect, deleteProject);
 
 router.post('/:id/members', protect, addProjectMember);
 

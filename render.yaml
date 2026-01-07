@@ -1,0 +1,43 @@
+services:
+  # Backend Node.js Service
+  - type: web
+    name: spm-backend
+    env: node
+    plan: free
+    repo: https://github.com/Rohitk0102/Smart-Project-Manager # User will need to connect their own repo
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # User must provide this
+      - key: JWT_SECRET
+        generateValue: true
+      - key: AI_SERVICE_URL
+        fromService:
+            type: web
+            name: spm-ai-service
+            property: url
+      - key: CLIENT_URL
+        sync: false # Set this to the Frontend Vercel URL
+
+  # AI Service (Python/FastAPI)
+  - type: web
+    name: spm-ai-service
+    env: python
+    plan: free
+    repo: https://github.com/Rohitk0102/Smart-Project-Manager
+    rootDir: ai-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PORT
+        value: 5001
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: HUGGINGFACEHUB_API_TOKEN # Required for Llama model
+        sync: false
+      - key: DEEPSEEK_API_KEY
+        sync: false

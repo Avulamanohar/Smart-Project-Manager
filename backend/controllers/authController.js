@@ -112,4 +112,16 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile };
+// @desc    Get all users (Company Directory)
+// @route   GET /api/auth/users
+// @access  Public (or Private)
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({}).select('-password').sort({ name: 1 });
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, getAllUsers };

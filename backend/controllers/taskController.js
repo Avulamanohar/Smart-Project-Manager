@@ -1,4 +1,5 @@
 const Task = require('../models/Task');
+const Project = require('../models/Project');
 const axios = require('axios');
 
 const { getIO } = require('../socket');
@@ -19,6 +20,54 @@ const analyzeTask = async (req, res) => {
     } catch (error) {
         console.error("AI Service Error:", error.message);
         res.status(503).json({ message: 'AI Service unavailable' });
+    }
+};
+
+// Helper to check and update project completion status
+const checkProjectCompletion = async (projectId) => {
+    if (!projectId) return;
+
+    try {
+        const totalTasks = await Task.countDocuments({ project: projectId });
+        const completedTasks = await Task.countDocuments({ project: projectId, status: 'done' });
+
+        const project = await Project.findById(projectId);
+        if (!project) return;
+
+        let statusChanged = false;
+
+        // If all tasks are done, WE DO NOT AUTO-MARK AS COMPLETED anymore.
+        // User must manually click "Complete".
+
+        // If previously completed but now not (e.g. task moved back or new task added), revert to active
+        if (project.status === 'completed' && (totalTasks === 0 || totalTasks !== completedTasks)) {
+            await Project.findByIdAndUpdate(projectId, { status: 'active' });
+            statusChanged = true;
+        }
+
+        if (statusChanged) {
+            // Emit project update
+            const updatedProject = await Project.findById(projectId)
+                .populate('owner', 'name email')
+                .populate('members', 'name email avatar');
+
+            const inProgressTasks = await Task.countDocuments({ project: projectId, status: 'in_progress' });
+            const weightedProgress = completedTasks + (inProgressTasks * 0.5);
+            const progress = totalTasks === 0 ? 0 : Math.round((weightedProgress / totalTasks) * 100);
+
+            const projectData = {
+                ...updatedProject.toObject(),
+                progress,
+                totalTasks,
+                completedTasks,
+                inProgressTasks
+            };
+
+            const io = getIO();
+            io.to(projectId.toString()).emit("project_updated", projectData);
+        }
+    } catch (error) {
+        console.error("Check Project Completion Error:", error);
     }
 };
 
@@ -53,6 +102,9 @@ const createTask = async (req, res) => {
     } catch (error) {
         console.error("Socket emit error:", error);
     }
+
+    // Check project completion (e.g. if adding a task to a completed project, it should revert to active)
+    await checkProjectCompletion(project);
 
     res.status(201).json(populatedTask);
 };
@@ -93,6 +145,9 @@ const updateTask = async (req, res) => {
             console.error("Socket emit error:", error);
         }
 
+        // Check for Project Completion
+        await checkProjectCompletion(task.project);
+
         res.json(updatedTask);
     } else {
         res.status(404).json({ message: 'Task not found' });
@@ -117,6 +172,9 @@ const deleteTask = async (req, res) => {
         }
 
         res.json({ message: 'Task removed' });
+
+        // Check project completion
+        await checkProjectCompletion(projectId);
     } else {
         res.status(404).json({ message: 'Task not found' });
     }
@@ -149,6 +207,9 @@ const reorderTasks = async (req, res) => {
                 // or refetches.
                 // Let's emit the updates provided.
                 io.to(projectId).emit("tasks_reordered", tasks);
+
+                // Check project completion after reorder (likely triggers status change too if drag-drop between columns)
+                await checkProjectCompletion(projectId);
             } catch (error) {
                 console.error("Socket emit error:", error);
             }
