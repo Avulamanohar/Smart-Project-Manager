@@ -1,0 +1,19 @@
+﻿git : remote: Repository 
+not found.
+At line:1 char:1
++ git push origin main 2>&1 
+| Out-File -FilePath 
+push_error.txt -Encodi ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (remot  
+  e: Repository not found   
+ .:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+fatal: repository 'https://g
+ithub.com/Avulamanohar/Smart
+-Project-Manager.git/' not 
+found

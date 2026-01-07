@@ -1,70 +1,72 @@
-# Deployment Guide for Smart Project Manager
+# GitHub Deployment Guide
 
-This guide helps you deploy the Smart Project Manager (MERN + Python AI) for free using **Render** (Backend & AI), **Vercel** (Frontend), and **MongoDB Atlas** (Database).
+## Steps to Deploy Your Smart Project Manager to GitHub
 
-## Prerequisites
-- [GitHub Account](https://github.com) (Push your code to a repository)
-- [MongoDB Atlas Account](https://www.mongodb.com/cloud/atlas/register)
-- [Render Account](https://render.com)
-- [Vercel Account](https://vercel.com)
+### 1. Create a New Repository on GitHub
+1. Go to https://github.com/Avulamanohar
+2. Click the "+" icon in the top right corner
+3. Select "New repository"
+4. Name it: `Smart-Project-Manager`
+5. **Do NOT initialize with README, .gitignore, or license** (we already have these)
+6. Click "Create repository"
 
----
+### 2. Push Your Local Project to GitHub
 
-## Step 1: Database Setup (MongoDB Atlas)
-1.  Log in to MongoDB Atlas and create a new **Free (M0)** Cluster.
-2.  Go to **Database Access** > Create a Database User (User/Password).
-3.  Go to **Network Access** > Add IP Address > Allow Access from Anywhere (`0.0.0.0/0`).
-4.  Go to **Database** > Connect > Drivers > Copy the **Connection String**.
-    - It looks like: `mongodb+srv://<username>:<password>@cluster0.mongodb.net/?retryWrites=true&w=majority`
-    - Replace `<password>` with your actual password.
+After creating the repository, run these commands in your terminal:
 
----
+```bash
+# Navigate to your project directory
+cd e:\spm3\Smart-Project-Manager
 
-## Step 2: Deploy Backend & AI Service (Render)
-We will use the `render.yaml` blueprint included in this project.
+# Add the remote repository
+git remote remove origin
+git remote add origin https://github.com/Avulamanohar/Smart-Project-Manager.git
 
-1.  **Push your code to GitHub** if you hasn't already.
-2.  Log in to [Render Dashboard](https://dashboard.render.com).
-3.  Click **New +** > **Blueprints**.
-4.  Connect your GitHub repository.
-5.  Render will detect `render.yaml` and show two services: `spm-backend` and `spm-ai-service`.
-6.  You will be prompted to enter Environment Variables:
-    - **MONGODB_URI**: Paste your MongoDB connection string from Step 1.
-    - **HUGGINGFACEHUB_API_TOKEN**: Your Hugging Face Access Token (Read permission).
-    - **DEEPSEEK_API_KEY**: (Optional) if you use DeepSeek.
-    - **CLIENT_URL**: Leave blank for now (or put `http://localhost:5173` temporarily). We will update this after deploying Frontend.
-7.  Click **Apply**. Render will deploy both services.
-8.  **Wait for deployment**. Once finished, note down the **Backend Service URL** (e.g., `https://spm-backend.onrender.com`).
-    - *Note: The first deploy might take a few minutes.*
+# Add all files
+git add .
 
----
+# Commit your changes
+git commit -m "Initial commit: Smart Project Manager"
 
-## Step 3: Deploy Frontend (Vercel)
-1.  Log in to [Vercel Dashboard](https://vercel.com/dashboard).
-2.  Click **Add New...** > **Project** > Import your GitHub repository.
-3.  **Configure Project**:
-    - **Framework Preset**: Vite
-    - **Root Directory**: Click the 'Edit' button and select `frontend`.
-4.  **Environment Variables**: Expand the section and add:
-    - `VITE_API_URL`: `https://your-backend-url.onrender.com/api` (Make sure to include `/api` at the end)
-    - `VITE_SOCKET_URL`: `https://your-backend-url.onrender.com` (Base URL without `/api`)
-    - *Replace `https://your-backend-url.onrender.com` with the actual URL from Step 2.*
-5.  Click **Deploy**.
-6.  Once live, copy your **Frontend URL** (e.g., `https://smart-project-manager.vercel.app`).
+# Push to GitHub
+git branch -M main
+git push -u origin main
+```
 
----
+### 3. Authentication
 
-## Step 4: Final Connection (CORS)
-1.  Go back to your **Render Dashboard**.
-2.  Select the **spm-backend** service.
-3.  Go to **Environment**.
-4.  Update `CLIENT_URL` to your **Frontend URL** (e.g., `https://smart-project-manager.vercel.app`).
-    - *Remove any trailing slashes.*
-5.  Render will redeploy the backend automatically.
+If you encounter authentication issues, you'll need to:
 
----
+**Option A: Use Personal Access Token (Recommended)**
+1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Generate new token with `repo` scope
+3. When prompted for password during push, use the token instead
+
+**Option B: Use GitHub CLI**
+```bash
+# Install GitHub CLI if not already installed
+# Then authenticate
+gh auth login
+```
+
+### 4. Verify Deployment
+
+After successful push, visit:
+https://github.com/Avulamanohar/Smart-Project-Manager
+
+You should see all your project files there.
+
+## Current Git Status
+
+Your local repository is configured with:
+- Remote: https://github.com/Avulamanohar/Smart-Project-Manager.git
+- Branch: main
+- All files are committed and ready to push
 
 ## Troubleshooting
-- **AI Service Error**: If the backend cannot talk to the AI service, check the logs of `spm-backend`. It should say `AI Service URL: ...`. Ensure the `AI_SERVICE_URL` env var was correctly set by the Blueprint (it usually happens automatically).
-- **CORS Error**: If you see CORS errors in the browser console, ensure `CLIENT_URL` in Backend matches your Vercel URL exactly.
-- **Boot Time**: Free tier on Render spins down after inactivity. The first request might take 30-50 seconds.
+
+If push fails:
+1. Make sure the repository exists on GitHub
+2. Check your authentication (token or credentials)
+3. Verify you have write access to the repository
+4. Try: `git push -f origin main` (force push, use with caution)
