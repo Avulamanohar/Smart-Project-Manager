@@ -6,7 +6,7 @@ import socket from '../socket';
 import { DndContext, closestCenter, DragOverlay, useDroppable, useSensor, useSensors, PointerSensor, TouchSensor } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FiArrowLeft, FiLayout, FiList, FiClock, FiX, FiCalendar, FiPieChart, FiPlus, FiBriefcase, FiInbox, FiPlay, FiCheckCircle, FiTrash2, FiRotateCcw, FiUser, FiUsers, FiAward } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight, FiLayout, FiList, FiClock, FiX, FiCalendar, FiPieChart, FiPlus, FiBriefcase, FiInbox, FiPlay, FiCheckCircle, FiTrash2, FiRotateCcw, FiUser, FiUsers, FiAward } from 'react-icons/fi';
 import ProjectAnalytics from '../components/ProjectAnalytics';
 
 const TaskCard = ({ task, onDelete, onUpdateStatus, onViewDetails, style, innerRef, ...props }) => {

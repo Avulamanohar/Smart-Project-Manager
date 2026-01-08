@@ -199,8 +199,8 @@ def recommend_assignee():
 # Start the server
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
-    print(f"🚀 Starting AI Service on port {port}...")
-    print(f"📡 API docs available at http://localhost:{port}/docs")
+    print(f" Starting AI Service on port {port}...")
+    print(f" API docs available at http://localhost:{port}/docs")
     
     uvicorn.run(
         app,
